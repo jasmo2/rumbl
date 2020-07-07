@@ -12,6 +12,7 @@ defmodule Rumbl.TestHelpers do
         username: "user#{System.unique_integer([:positive])}",
         password: attrs[:password] || "supersecret"
       })
+      |> IO.inspect(label: "WHAT IS BEING PASSED TO REGISTER_USER()")
       |> Accounts.register_user()
 
     user
