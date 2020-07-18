@@ -8,6 +8,8 @@ defmodule Rumbl.Multimedia.Video do
     field :slug, :string
     field :title, :string
     field :url, :string
+
+    has_many :annotations, Rumbl.Multimedia.Annotation
     belongs_to :user, Rumbl.Accounts.User
     belongs_to :category, Rumbl.Multimedia.Category
     timestamps()
@@ -19,7 +21,7 @@ defmodule Rumbl.Multimedia.Video do
     |> cast(attrs, [:url, :title, :description, :category_id])
     |> validate_required([:url, :title, :description])
     |> assoc_constraint(:category)
-    |> slugify_title
+    |> slugify_title()
   end
 
   defp slugify_title(changeset) do
