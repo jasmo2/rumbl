@@ -37,10 +37,10 @@ defmodule Rumbl.MixProject do
   defp deps do
     [
       {:ecto_sql, "~> 3.4"},
-      {:jason, "~> 1.0"}
+      {:jason, "~> 1.0"},
       {:pbkdf2_elixir, "~> 1.0"},
       {:phoenix_pubsub, "~> 2.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:postgrex, ">= 0.0.0"}
     ]
   end
 
