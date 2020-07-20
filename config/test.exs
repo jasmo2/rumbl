@@ -19,4 +19,6 @@ config :rumbl_web, RumblWeb.Endpoint,
   server: false
 
 # Print only warnings and errors during test
+
+config :pbkdf2_elixir, :rounds, 1
 config :logger, level: :warn
