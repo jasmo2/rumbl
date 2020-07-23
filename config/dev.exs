@@ -65,6 +65,14 @@ config :rumbl_web, RumblWeb.Endpoint,
     ]
   ]
 
+wolfram_app_id =
+  System.get_env("WOLFRAM_APP_ID") ||
+    raise """
+    environment variable WOLFRAM_APP_ID is missing.
+    """
+
+config :info_sys, :wolfram, app_id: wolfram_app_id
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 
