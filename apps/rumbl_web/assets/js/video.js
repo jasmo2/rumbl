@@ -18,6 +18,8 @@ let Video = {
     let msgContainer = document.getElementById('msg-container')
     let msgInput = document.getElementById('msg-input')
     let postButton = document.getElementById('msg-submit')
+    let userList = document.getElementById('user-list')
+    let lastSeenId = 0
     let vidChannel = socket.channel('videos:' + videoId, () => {
       return { last_seen_id: lastSeenId }
     })
@@ -37,7 +39,7 @@ let Video = {
       let payload = { body: msgInput.value, at: Player.getCurrentTime() }
       vidChannel
         .push('new_annotation', payload)
-        .receive('error', (e) => console.error(e))
+        .receive('error', (e) => console.log(e))
       msgInput.value = ''
     })
 
