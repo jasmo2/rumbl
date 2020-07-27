@@ -1,25 +1,61 @@
 defmodule InfoSysTest.CacheTest do
-  use EXUnit.Case, async: true
+  use ExUnit.Case, async: true
   alias InfoSys.Cache
 
   @moduletag clear_interval: 100
 
-  setup %{test: name, clear_interval: clear_inteval} do
-    {:ok,  pid} = Cache.start_link(name: name, clear_interval: clear_interval)
-    {:ok, name: name ,pid: pid}
+  defp assert_shutdown(pid) do
+    ref = Process.monitor(pid)
+    Process.unlink(pid)
+    Process.exit(pid, :kill)
+
+    assert_receive {:DOWN, ^ref, :process, ^pid, :kill}
+  end
+
+  defp eventually(func) do
+    if func.() do
+      true
+    else
+      Process.sleep(10)
+      eventually(func)
+    end
+  end
+
+  setup %{test: name, clear_interval: clear_interval} do
+    {:ok, pid} = Cache.start_link(name: name, clear_interval: clear_interval)
+    {:ok, name: name, pid: pid}
   end
 
   test "key value pairs can be put and fetched from cache", %{name: name} do
-    assert :ok = Cache.put(name, :key, :value1)
+    assert :ok = IO.inspect(Cache.put(name, :key, :value1))
     assert :ok = Cache.put(name, :key, :value2)
 
     assert Cache.fetch(name, :key1) == {:ok, :value1}
     assert Cache.fetch(name, :key2) == {:ok, :value2}
   end
 
-  test "unfound entry return error" do
+  test "unfound entry return error", %{name: name} do
     assert Cache.fetch(name, :notexist) == :error
   end
 
+  test "clears all entries after clear interval", %{name: name} do
+    assert :ok = Cache.put(name, :key1, :value1)
+    assert Cache.fetch(name, :key1) == {:ok, :value1}
 
+    assert eventually(fn -> Cache.fetch(name, :key1) == :error end)
+  end
+
+  @tag clear_interval: 60_000
+  test "values are cleaned up to exit", %{name: name, pid: pid} do
+    IO.puts("TCL: test \"values are cleaned up to exit\"")
+    IO.puts("name")
+    IO.inspect(name)
+    IO.puts("pid")
+    IO.inspect(pid)
+
+    assert :ok = Cache.put(name, :key1, :value1)
+    assert_shutdown(pid)
+    {:ok, _cache} = Cache.start_link(name: name)
+    assert Cache.fetch(name, :key1) == :error
+  end
 end
