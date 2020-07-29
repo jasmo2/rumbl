@@ -1,10 +1,9 @@
 use Mix.Config
 
-# Configure your database
-#
-# The MIX_TEST_PARTITION environment variable can be used
-# to provide built-in test partitioning in CI environment.
-# Run `mix help test` for more information.
+config :info_sys, :wolfram,
+  app_id: "1234",
+  http_client: InfoSys.Test.HTTPClient
+
 config :rumbl, Rumbl.Repo,
   username: "postgres",
   password: "postgres",
