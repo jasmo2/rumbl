@@ -18,13 +18,15 @@ defmodule RumblWeb.TestHelpers do
   def insert_user(attrs \\ %{}) do
     {:ok, user} =
       attrs
-      |> Enum.into(defult.user())
+      |> Enum.into(default_user())
       |> Rumbl.Accounts.register_user()
+
+    user
   end
 
-  def insert_video(user, attrs || %{}) do
-    video_fields = Enum.into(attrs, defult_video())
-    %{:ok, video} = Rumbl.Multimedia.create_video(user, video_fields)
+  def insert_video(user, attrs \\ %{}) do
+    video_fields = Enum.into(attrs, default_video())
+    {:ok, video} = Rumbl.Multimedia.create_video(user, video_fields)
     video
   end
 
@@ -33,7 +35,7 @@ defmodule RumblWeb.TestHelpers do
     {Plug.Conn.assign(conn, :current_user, user), user}
   end
 
-  def login(%{conn:conn}) do
+  def login(%{conn: conn}) do
     {conn, :logout}
   end
 end
